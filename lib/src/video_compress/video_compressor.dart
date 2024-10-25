@@ -96,10 +96,13 @@ extension Compress on IVideoCompress {
   /// final info = await _flutterVideoCompress.getMediaInfo(file.path);
   /// debugPrint(info.toJson());
   /// ```
-  Future<MediaInfo> getMediaInfo(String path) async {
+  /// sourceType: file and network
+  Future<MediaInfo> getMediaInfo(String path,{String sourceType = "file"}) async {
     // Not to set the result as strong-mode so that it would have exception to
     // lead to the failure of compression
-    final jsonStr = await (_invoke<String>('getMediaInfo', {'path': path}));
+    final jsonStr = await (_invoke<String>('getMediaInfo', {'path': path,
+    "sourceType": sourceType
+    }));
     final jsonMap = json.decode(jsonStr!);
     return MediaInfo.fromJson(jsonMap);
   }

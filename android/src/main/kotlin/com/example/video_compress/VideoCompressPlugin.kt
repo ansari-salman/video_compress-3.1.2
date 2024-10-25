@@ -61,7 +61,8 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
             }
             "getMediaInfo" -> {
                 val path = call.argument<String>("path")
-                result.success(Utility(channelName).getMediaInfoJson(context, path!!).toString())
+                val sourceType = call.argument<String>("sourceType")
+                result.success(Utility(channelName).getMediaInfoJson(context, path!!,sourceType).toString())
             }
             "deleteAllCache" -> {
                 result.success(Utility(channelName).deleteAllCache(context, result));
@@ -156,7 +157,7 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
                             }
                             override fun onTranscodeCompleted(successCode: Int) {
                                 channel.invokeMethod("updateProgress", 100.00)
-                                val json = Utility(channelName).getMediaInfoJson(context, destPath)
+                                val json = Utility(channelName).getMediaInfoJson(context, destPath,"file")
                                 json.put("isCancel", false)
                                 result.success(json.toString())
                                 if (deleteOrigin) {

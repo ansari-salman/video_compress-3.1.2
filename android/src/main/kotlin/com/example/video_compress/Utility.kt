@@ -31,11 +31,19 @@ class Utility(private val channelName: String) {
         return timeStamp.toLong()
     }
 
-    fun getMediaInfoJson(context: Context, path: String): JSONObject {
-        val file = File(path)
+    fun getMediaInfoJson(context: Context, path: String, sourceType: String): JSONObject {
         val retriever = MediaMetadataRetriever()
 
-        retriever.setDataSource(context, Uri.fromFile(file))
+        if (sourceType == "network") {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+                retriever.setDataSource(path, HashMap())
+            } else {
+                retriever.setDataSource(path)
+            }
+        } else {
+            val file = File(path)
+            retriever.setDataSource(context, Uri.fromFile(file))
+        }
 
         val durationStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
         val title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE) ?: ""
